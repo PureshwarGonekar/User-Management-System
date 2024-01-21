@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <style>
         .upload-container {
             display: flex;
@@ -85,7 +87,7 @@
             <label for="photo">Photo:</label>
             <div class="custom-file">
                 <div>
-                    <input type="file" id="photo" name="photo" onchange="previewImage()" required>
+                    <input type="file" id="photo" name="photo" onchange="initCropper()" required style="opacity: 0;">
                 </div>
                 
                 <label class="custom-file-label" for="photo" id="fileLabel">Choose file</label>
@@ -102,26 +104,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 <script>
-    function previewImage() {
-        const fileInput = document.getElementById('photo');
-        const imagePreview = document.getElementById('imagePreview');
-        const fileLabel = document.getElementById('fileLabel');
-
-        if (fileInput.files.length > 0) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                imagePreview.src = e.target.result;
-            };
-
-            reader.readAsDataURL(fileInput.files[0]);
-
-            fileLabel.innerText = fileInput.files[0].name;
-        } else {
-            imagePreview.src = 'userImages/preview.jpg';
-            fileLabel.innerText = 'Choose file';
-        }
-    }
 
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
@@ -135,6 +117,31 @@
             body.style.overflow = 'hidden';
         }
     }
+
+    let cropper;
+
+    function initCropper() {
+        const fileInput = document.getElementById('photo');
+        const imagePreview = document.getElementById('imagePreview');
+        const fileLabel = document.getElementById('fileLabel');
+
+        if (fileInput.files.length > 0) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+                fileLabel.innerText = fileInput.files[0].name;
+
+                cropper = new Cropper(imagePreview, {
+                    // aspectRatio: 4 / 3, // Adjust the aspect ratio as needed
+                    viewMode: 2,   
+                });
+            };
+
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+
 </script>
 
 </body>
