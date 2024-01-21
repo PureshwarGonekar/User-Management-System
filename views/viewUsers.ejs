@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        .vertical-line {
+            padding: 10px;
+            border-left: 2px solid #ddd;
+        }
+        .action-buttons {
+            display: flex;
+        }
+        .action-buttons form {
+            margin-right: 10px; 
+        }
+    </style>
+    <title>User Management</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <button type="button" class="btn btn-outline-primary" onclick="goBack()">&lt;Back</button>
+        <div class="container mt-5">
+            <table class="table">
+                <thead class="table-primary">
+                    <tr>
+                        <th scope="col">User ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Photo</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (typeof users !== 'undefined') { %>
+                        <% users.forEach((user, index) => { %>
+                            <tr>
+                                <td><%= user.userId %></td>
+                                <td><%= user.name ? user.name : '-' %></td>
+                                <td><img src="userImages/<%= user.profileImage %>" alt="<%= user.name %>'s Photo" width="50" onerror="handleImageError(this)"></td>
+                                <td class="action-buttons">
+                                    <% if (user.status !== 'Accepted') { %>
+                                        <form action="/accept-user" method="post">
+                                            <input type="hidden" name="ID" value="<%= user._id %>">
+                                            <button type="submit" class="btn btn-primary">Done</button>
+                                        </form>
+                                    <% } %>
+                                    <form action="/delete-user" method="post">
+                                        <input type="hidden" name="ID" value="<%= user._id %>">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script> 
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+        function handleImageError(img) {
+            console.log("err",img);
+            img.src = 'userImages/preview.jpg';
+            img.onerror = null;
+        }
+    </script>
+</body>
+</html>

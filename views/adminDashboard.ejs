@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        .vertical-line {
+            padding: 10px;
+            border-left: 2px solid #ddd;
+        }
+    </style>
+    <title>User Management</title>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Create User</h2>
+            <form method="post" action="/create-user" class="mt-5">
+                <div class="form-group">
+                    <label for="userId">User ID:</label>
+                    <input type="text" class="form-control" name="userId" id="userId" placeholder="Enter username" required >
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="text" class="form-control" name="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" value="RegisterUser" class="btn btn-primary">Create User</button>
+            </form>
+        </div>
+
+        <div class="col-md-1 vertical-line"></div>
+
+        <div class="col-md-5" >
+            <h2>View Users</h2>
+            <div class="list-group mt-5" >
+                <% if (typeof users !== 'undefined') { %>
+                    <div class="list-group mt-5">
+                        <% 
+                        for (let i = 0; i < Math.min(2, users.length); i++) {
+                            const user = users[i];
+                        %>
+                            <div class="alert alert-primary">
+                                <p class="border border-secondary py-md-1 pl-md-1 bg-white text-dark"><%= user.userId %></p>
+                            </div>
+                        <% } %>
+
+                        <% if (users.length > 2) { %>
+                            <div id="moreUsers" class="collapse mt-3">
+                                <% 
+                                for (let i = 2; i < users.length; i++) {
+                                    const user = users[i];
+                                %>
+                                    <div class="alert alert-primary">
+                                        <p class="border border-secondary py-md-1 pl-md-1 bg-white text-dark"><%= user.userId %></p>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <a href="" class="cursor" data-toggle="collapse" data-target="#moreUsers">Show More..</a>
+                            <form action="/view-users" method="post">
+                                <button type="submit" class="btn btn-primary mt-3" name="ViewUsers">View</button>
+                            </form>
+                        <% } %>
+                    </div>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+</body>
+</html>

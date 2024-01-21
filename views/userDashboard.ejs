@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        .upload-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px; 
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            height: 100%;
+            width: 300px;
+            background-color: rgb(248, 249, 250);
+            padding: 20px;
+            transition: right 0.3s ease;
+            z-index: 89;
+        }
+        .view-btn {
+            position: fixed;
+            margin: 2%;
+            top: 10px;
+            right: 10px;
+        }
+        #sidebarContent {
+            margin-top: 15%;
+        }
+        #status {
+            margin-top: 10px;
+        }
+        .custom-file {
+            margin-top: 10px;
+        }
+        .btn-block {
+            width: 100%;
+        }
+    </style>
+    <title>User Dashboard</title>
+</head>
+<body>
+
+<div id="sidebar">
+    <button type="button" class="btn btn-outline-secondary" onclick="toggleSidebar()">Back</button>
+    <% if (typeof user !== 'undefined') { %>
+    <div id="sidebarContent">
+        
+        <div class="form-group">
+            <label for="viewname">Name:</label>
+            <input readonly type="text" id="viewname" name="viewname" class="form-control" value="<%= user.name %>" required>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <label for="viewphoto">Photo:</label>
+            <img class="border" height="250px" src="userImages/<%= user.profileImage %>" alt="<%= user.name %>'s Photo" id="viewphoto" class="mt-2" alt="Image Preview">
+        </div>
+        <div class="mt-5 text-center" id="status" style="<%= user.status === 'Not Accepted' ? 'color: red;' : 'color: green' %>">
+            <h2><%= user.status %></h2>
+        </div>
+    </div>
+     <% } %>
+</div>
+
+<button type="button" class="view-btn btn btn-outline-primary" onclick="toggleSidebar()">View</button>
+<div class="upload-container">
+    <form id="uploadForm" action="/update-user" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="photo">Photo:</label>
+            <div class="custom-file">
+                <div>
+                    <input type="file" id="photo" name="photo" onchange="previewImage()" required>
+                </div>
+                
+                <label class="custom-file-label" for="photo" id="fileLabel">Choose file</label>
+            </div>
+            <img width="200px" height="200px" src="userImages/preview.jpg" id="imagePreview" class="mt-2" alt="Image Preview">
+        </div>
+        <input type="hidden" name="ID" value="<%= user._id %>">
+        <button type="submit" class="btn btn-primary btn-block mt-3" name="Upload">Upload</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script>
+    function previewImage() {
+        const fileInput = document.getElementById('photo');
+        const imagePreview = document.getElementById('imagePreview');
+        const fileLabel = document.getElementById('fileLabel');
+
+        if (fileInput.files.length > 0) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+            };
+
+            reader.readAsDataURL(fileInput.files[0]);
+
+            fileLabel.innerText = fileInput.files[0].name;
+        } else {
+            imagePreview.src = 'userImages/preview.jpg';
+            fileLabel.innerText = 'Choose file';
+        }
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const body = document.body;
+
+        if (parseInt(sidebar.style.right) === 0) {
+            sidebar.style.right = '-300px';
+            body.style.overflow = 'auto';
+        } else {
+            sidebar.style.right = '0';
+            body.style.overflow = 'hidden';
+        }
+    }
+</script>
+
+</body>
+</html>
